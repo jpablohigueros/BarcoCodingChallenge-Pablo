@@ -6,8 +6,14 @@
 </head>
 <body>
 <div id="app">
-    <h1>Hello {{ user }} {{ age }}</h1>
-    <button @click="age++"></button>
+    <h1>Task Manager</h1>
+    <ul v-if="!showPerson">
+        <div v-for="user in users" :key="user.id" :id="user.id" @click="setPerson($event)">{{ user.name }}</div>
+    </ul>
+    <div v-else>
+        <h4>{{ person.name }}</h4>
+        <div v-for="todo in todos" :id="todo.id">{{ todo.title }}</div>
+    </div>
 </div>
 <script src="http://unpkg.com/vue@3.0.2"></script>
 <script src="app.js"></script>
