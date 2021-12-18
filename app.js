@@ -1,7 +1,7 @@
 const app = Vue.createApp({
     data() {
         return {
-            urlPrefix: 'https://jsonplaceholder.typicode.com/',
+            urlPrefix: 'https://jsonplaceholder.typicode.com/users',
             users: null,
             person: null,
             todos: null,
@@ -10,7 +10,7 @@ const app = Vue.createApp({
     },
     methods: {
         fetchUsers() { // Function gets user data from api
-            fetch(this.urlPrefix + 'users')
+            fetch(this.urlPrefix)
                 .then(response => response.json())
                 .then(json => this.setUsers(json))
         },
@@ -28,7 +28,7 @@ const app = Vue.createApp({
             }
         },
         getPersonTodos() { // Fetches selected user's tasks from api
-            fetch(this.urlPrefix + 'users/' + this.person.id + '/todos')
+            fetch(this.urlPrefix + '/' + this.person.id + '/todos')
                 .then((response) => response.json())
                 .then((json) => this.setTodos(json))
                 .then(() => this.changePage())
@@ -45,7 +45,7 @@ const app = Vue.createApp({
                 this.showPerson = false
             }
         },
-        calculatePercentage() {
+        calculatePercentage() { // Calculates percentage of tasks completed
             let total = this.todos.length
             let done = 0
             for (let i = 0; i < total; i ++) {
@@ -57,8 +57,8 @@ const app = Vue.createApp({
             this.setProgressBar(percent)
             return percent
         },
-        setProgressBar(progress) {
-            setTimeout(function () {
+        setProgressBar(progress) { // Sets width of progress bar
+            setTimeout(function () { // Timeout allows element to load before we try to extract it
                 let element = document.getElementById("dynamic")
                 element.style.width = progress + "%"
                 console.log(element)
