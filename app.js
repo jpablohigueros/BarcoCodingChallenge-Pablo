@@ -5,22 +5,26 @@ const app = Vue.createApp({
             users: null,
             person: null,
             todos: null,
-            showPerson: false
+            showPerson: false // Flag that determines whether to show the list of users or their to do's
         }
     },
     methods: {
         fetchUsers() { // Function gets user data from api
-            fetch(this.urlPrefix)
-                .then(response => response.json())
-                .then(json => this.setUsers(json))
+            try {
+                fetch(this.urlPrefix)
+                    .then(response => response.json()) // Parse json
+                    .then(json => this.setUsers(json)) // Set users variable in data()
+            } catch (e) {
+                console.error(e)
+            }
         },
         setUsers(users) { // Function gets data from fetchUsers() and sets it up to be returned in data()
             this.users = users
         },
         setPerson(event) { // Function selects the user that was selected
-            let id = parseInt(event.target.id)
+            let id = parseInt(event.target.id) // Make sure id comes as int
             let size = this.users.length
-            for (let i = 0; i < size; i++) {
+            for (let i = 0; i < size; i++) { // Get the user for the selected id
                 if (this.users[i].id === id) {
                     this.person = this.users[i]
                     this.getPersonTodos()
@@ -28,10 +32,15 @@ const app = Vue.createApp({
             }
         },
         getPersonTodos() { // Fetches selected user's tasks from api
-            fetch(this.urlPrefix + '/' + this.person.id + '/todos')
-                .then((response) => response.json())
-                .then((json) => this.setTodos(json))
-                .then(() => this.changePage())
+            try {
+                fetch(this.urlPrefix + '/' + this.person.id + '/todos')
+                    .then((response) => response.json()) // Parse json
+                    .then((json) => this.setTodos(json)) // Set users variable in data()
+                    .then(() => this.changePage()) // We are using conditional rendering (not separate pages). This function
+                                                   // switches the flag that signals we need to render the to dos page
+            } catch (e) {
+                console.error(e)
+            }
         },
         setTodos(todos) { // Helper to set todos
             this.todos = todos
@@ -39,7 +48,6 @@ const app = Vue.createApp({
         changePage() { // Determines which page is being shown (switches between main page and user page)
             if(!this.showPerson) {
                 this.showPerson = true
-
             }
             else {
                 this.showPerson = false
@@ -48,7 +56,7 @@ const app = Vue.createApp({
         calculatePercentage() { // Calculates percentage of tasks completed
             let total = this.todos.length
             let done = 0
-            for (let i = 0; i < total; i ++) {
+            for (let i = 0; i < total; i ++) { // Adds up all completed tasks
                 if (this.todos[i].completed) {
                     done++
                 }
